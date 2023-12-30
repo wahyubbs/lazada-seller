@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { generateToken } from "../api/auth";
 import Loader from "../components/Loader";
 import { Container } from "@mui/material";
@@ -13,6 +13,7 @@ enum StatusOauth {
 function OauthCallback() {
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code");
+  const navigate = useNavigate();
   const [status, setStatus] = useState<StatusOauth>(StatusOauth.LOADING);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ function OauthCallback() {
       if (response?.data) {
         setStatus(StatusOauth.SUCCESS);
         localStorage.setItem("token", JSON.stringify(response.data));
+        navigate("/");
       } else setStatus(StatusOauth.ERROR);
     }
     if (code) generateCodeHandler(code);
